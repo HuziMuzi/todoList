@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TodoList} from './TodoList';
 import {v1} from 'uuid';
+import {AddItemForm} from "./components/AddItemForm";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -36,7 +37,7 @@ function App() {
             {id: v1(), title: "GraphQL2", isDone: false},
         ],
     })
-    let [filter, setFilter] = useState<FilterValuesType>("all");
+    // let [filter, setFilter] = useState<FilterValuesType>("all");
 
     console.log(tasks)
 
@@ -58,6 +59,13 @@ function App() {
         // console.log({...tasks,[todoListsId]:tasks[todoListsId]})
         // let newTasks = [task, ...tasks];
         // setTasks(newTasks);
+    }
+
+    const addTodolist = (title: string) => {
+        const newTodoListID = v1()
+        const newTodoList:TodoListsType = {id: newTodoListID, title:title, filter:'all'}
+        setTodoLists([newTodoList,...todoLists])
+        setTasks({...tasks,[newTodoListID]:[]})
     }
 
     function changeStatus(todoListsId: string, taskId: string, isDone: boolean) {
@@ -86,8 +94,9 @@ function App() {
 
     return (
         <div className="App">
-            {todoLists.map(el => {
+            <AddItemForm callback={addTodolist}/>
 
+            {todoLists.map(el => {
                 let tasksForTodolist = tasks[el.id];
                 if (el.filter === "active") {
                     tasksForTodolist = tasks[el.id].filter(t => t.isDone === false);
